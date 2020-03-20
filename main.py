@@ -124,10 +124,12 @@ class HYUBlackboard:
                     target = path
                     for i in parent:
                         target = os.path.join(target, i)
-                    filename = '_'.join(now['title'].split(
-                        '/')[:-1]).replace(' ', '').replace('\\', '') + '.mp4'
-                    filename = ''.join(
-                        c for c in filename if c not in invalid_chars)
+                    sp = now['title'].split('/')
+                    if not len(sp) == 1:
+                        filename = sp[:-1]
+                    else:
+                        filename = now['title']
+                    filename = ''.join(c for c in filename if c not in invalid_chars) + '.mp4'
                     target = os.path.join(target, filename)
                     if os.path.exists(target):
                         print(
