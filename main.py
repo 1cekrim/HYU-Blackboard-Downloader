@@ -5,7 +5,10 @@ import sys
 import colorama
 import urllib3
 urllib3.disable_warnings()
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
+WEB_DRIVER = 'C:\chromedriver.exe'
 
 class HYUBlackboard:
     def __init__(self, **kwargs):
@@ -164,6 +167,24 @@ class HYUBlackboard:
                     sys.stdout.flush()
         print()
 
+def get_BbRouter(id, pw):
+    option = webdriver.ChromeOptions()
+    option.add_argument('headless')
+    option.add_argument('--disable-gpu')
+    option.add_argument('lang=ko_KR')
+    driver = webdriver.Chrome(WEB_DRIVER, chrome_options=option)
+    driver.get('https://learn.hanyang.ac.kr/ultra/institution-page')
+    driver.implicitly_wait(10)
+    driver.find_element_by_id('entry-login-custom').send_keys(Keys.ENTER)
+    driver.find_element_by_id('uid').send_keys(id)
+    driver.find_element_by_id('upw').send_keys(pw)
+    driver.find_element_by_id('login_btn').click()
+    driver.switch_to.alert.accept()
+    for cookie in driver.get_cookies():
+        if cookie['name'] == 'BbRouter':
+            return cookie['value']
+    print(f'{colorama.Fore.RED}[-] login failed')
+    assert(False)
 
 def main():
     workspace = os.path.join(os.getcwd(), 'Blackboard')
@@ -173,7 +194,10 @@ def main():
     colorama.init(autoreset=True)
 
     print(f'{colorama.Fore.LIGHTBLACK_EX}Blackboard Downloader')
-    BbRouter = input('BbRouter: ')
+    id = input('ID: ')
+    pw = input('PASSWORD: ')
+
+    BbRouter = get_BbRouter(id, pw)
 
     blackboard = HYUBlackboard(BbRouter=BbRouter, path=workspace)
     blackboard.get_user_key()
