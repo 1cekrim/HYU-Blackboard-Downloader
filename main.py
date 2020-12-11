@@ -52,7 +52,7 @@ class HYUBlackboard:
     def get_contents(self, name, id):
         def get_children(root_id):
             url = self.url + \
-                f'/learn/api/v1/courses/{id}/contents/{root_id}/children?@view=Summary&expand=assignedGroups,selfEnrollmentGroups.group,gradebookCategory&limit=10'
+                f'/learn/api/v1/courses/{id}/contents/{root_id}/children?@view=Summary&expand=assignedGroups,selfEnrollmentGroups.group,gradebookCategory&limit=10000'
             cookies = {'BbRouter': self.BbRouter}
             rep = self.session.get(url, cookies=cookies, verify=False)
             contents = json.loads(rep.text)['results']
